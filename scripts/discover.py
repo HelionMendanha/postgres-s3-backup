@@ -178,6 +178,7 @@ def discover(workloads, services, excluded):
                     ).lower() == "true"
                 ),
                 "services": candidates,
+                "pod_selector": workload["spec"]["selector"],
                 "credentials": credentials,
                 "issues": issues,
                 "status": (

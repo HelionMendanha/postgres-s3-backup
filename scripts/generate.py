@@ -9,6 +9,7 @@ import sys
 
 from pathlib import Path
 from datetime import datetime, timedelta
+from network import generate_ingress_policy
 
 
 def load_json(path):
@@ -368,10 +369,15 @@ def main():
     if len(set(identities)) != len(identities):
         raise RuntimeError("Duplicate resource name")
 
+    policies = [
+        generate_ingress_policy(instance, cronjob)
+        for instance, cronjob in zip(instances, manifests)
+    ]
+
     result = {
         "apiVersion": "v1",
         "kind": "List",
-        "items": manifests
+        "items": manifests + policies
     }
 
     output = Path(args.output)
@@ -390,6 +396,7 @@ def main():
         "status": "success",
         "mode": "preview-only",
         "cronjobs_generated": len(manifests),
+        "networkpolicies_generated": len(policies),
         "suspended": True,
         "dry_run": True,
         "output": str(output)
