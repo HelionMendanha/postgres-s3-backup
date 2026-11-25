@@ -11,7 +11,7 @@ ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     AWS_EC2_METADATA_DISABLED=true \
-    PG_MAJOR=16
+    PG_MAJOR=auto
 
 # Install system dependencies and PostgreSQL repository
 RUN set -eux; \
@@ -66,6 +66,8 @@ ENV PATH="/usr/lib/postgresql/16/bin:${PATH}"
 
 WORKDIR /app
 
+COPY --chown=0:0 scripts/ /app/scripts/
+
 USER 10001:10001
 
-CMD ["pg_dump", "--version"]
+CMD ["python", "/app/scripts/backup.py"]
