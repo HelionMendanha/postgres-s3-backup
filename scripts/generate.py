@@ -9,7 +9,10 @@ import sys
 
 from pathlib import Path
 from datetime import datetime, timedelta
-from network import generate_ingress_policy
+from network import (
+    generate_ingress_policy,
+    generate_egress_policy
+)
 
 
 def load_json(path):
@@ -373,6 +376,12 @@ def main():
         generate_ingress_policy(instance, cronjob)
         for instance, cronjob in zip(instances, manifests)
     ]
+
+    if config.get("network", {}).get("egressEnabled") is True:
+        policies.extend([
+            generate_egress_policy(instance, cronjob, config)
+            for instance, cronjob in zip(instances, manifests)
+        ])
 
     result = {
         "apiVersion": "v1",

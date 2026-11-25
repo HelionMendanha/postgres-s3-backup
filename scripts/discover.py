@@ -98,6 +98,11 @@ def discover_services(namespace, labels, services):
                         f"{metadata['name']}.{namespace}.svc"
                     ),
                     "port": port["port"],
+                    "cluster_ips": spec.get("clusterIPs") or (
+                        [spec["clusterIP"]]
+                        if spec.get("clusterIP") not in (None, "", "None")
+                        else []
+                    ),
                     "headless": (
                         spec.get("clusterIP") == "None"
                     )
