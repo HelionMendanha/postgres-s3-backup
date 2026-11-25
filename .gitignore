@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+.env.*
+*.pem
+*.key
+*.dump
+*.backup
+*.sql
+*.pgpass
+.pgpass
+.aws/
+backups/
+secrets/
