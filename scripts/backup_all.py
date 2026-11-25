@@ -10,6 +10,8 @@ import time
 from pathlib import Path
 from datetime import datetime, timezone
 
+from common import safe_database_name, validate_database_name
+
 from backup import (
     required_env,
     pg_binary,
@@ -65,15 +67,6 @@ def discover_databases(major, maintenance_db):
     return databases
 
 
-def safe_database_name(database):
-
-    return "".join(
-        char if char.isalnum() or char in "-_"
-        else "_"
-        for char in database
-    )
-
-
 def validate_databases(databases):
 
     prefixes = set()
@@ -91,6 +84,7 @@ def validate_databases(databases):
                 f"Unsafe database name: {database!r}"
             )
 
+        validate_database_name(database)
         prefix = safe_database_name(database)
 
         if prefix in prefixes:

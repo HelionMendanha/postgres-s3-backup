@@ -7,6 +7,7 @@ import re
 import logging
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
+from common import validate_database_name
 from backup import required_env, create_s3_client
 from restore import read_manifest
 
@@ -48,8 +49,7 @@ def main():
     database = required_env('PGDATABASE')
     if not prefix or any(p in ('', '.', '..') for p in prefix.split('/')):
         raise RuntimeError('Explicit nonempty S3_PREFIX required')
-    if not database or not all(c.isalnum() or c in '-_' for c in database):
-        raise RuntimeError('Retention requires an unambiguous database name')
+    validate_database_name(database)
     if os.getenv('RETENTION_DRY_RUN', 'true').lower() != 'true':
         raise RuntimeError('Deletion is disabled in this release')
     daily = count_env('RETENTION_DAILY', 7)

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+from common import safe_database_name, validate_database_name
 import sys
 import json
 import hashlib
@@ -182,6 +183,7 @@ def main():
 
     host = required_env("PGHOST")
     database = required_env("PGDATABASE")
+    validate_database_name(database)
     user = required_env("PGUSER")
 
     bucket = required_env("S3_BUCKET")
@@ -231,11 +233,7 @@ def main():
     pg_dump = pg_binary(major, "pg_dump")
     pg_restore = pg_binary(major, "pg_restore")
 
-    safe_database = "".join(
-        char if char.isalnum() or char in "-_"
-        else "_"
-        for char in database
-    )
+    safe_database = safe_database_name(database)
 
     filename = (
         f"{safe_database}_pg{major}_"
